@@ -2,6 +2,22 @@
 
 Live website: https://samtechpk.github.io/dcl/
 
+## November 5, 2026 — Compact release
+- Approved Option 1: one Compact card, date/time first, then contact details and optional team name.
+- Today and Tomorrow shortcuts use Pakistan time. Times are never preselected.
+- Valid times and contact details survive date changes; past start times are cleared.
+- Price, duration and minimum advance are grouped directly above the WhatsApp action.
+- Copy inquiry fallback is visible beside reset and preview tools.
+- Optional Team Name is appended to the WhatsApp inquiry; customer name remains separate.
+- Booking number and directions are beside the form. No new live availability or Manager sync is implied.
+- Locked hero, imagery, branding, rates, hours, team reward section and footer are preserved.
+
+### Development
+Run `node scripts/build.cjs` after editing `scripts/inquiry.js`. It updates the inline script and its CSP hash and prepares `dist/` for local preview. Run `node scripts/test-inquiry.cjs` to validate. GitHub Pages serves the root index.html and assets. Do not publish temporary QA pages, preview manifests or customer data.
+
+### Validation limits
+576 hourly combinations, overnight dates, date shortcuts, preserved selections, invalid field blocking, team names and duplicate-submit guards passed automated checks. Desktop and phone-width Chrome layouts were inspected. Physical iPhone/Safari and Android device checks are still outstanding. Customers must tap Send in WhatsApp; opening WhatsApp is not delivery or confirmation.
+
 ## November 1, 2026 update
 - One prominent Check availability on WhatsApp button directly below the form. It remains disabled until every field is valid.
 - Inline field errors and a number-format indicator; no phone ownership verification is implied.
