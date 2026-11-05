@@ -56,3 +56,6 @@ Powered by SAM TECH
 - Explicit Send inquiry on WhatsApp label, clear next-step status and instructions to tap Send in WhatsApp.
 - Session preview marked as not a ticket; filling the form does not submit an inquiry.
 - Floating Chat with DCL icon for general questions, separate from the prepared inquiry.
+
+## One-view mobile form — 5 November 2026
+Team name removed from form, validation and inquiry message. Tighter spacing, 44px native inputs, 52px WhatsApp action. Mobile anchor opens at form with long introduction removed; session preview and help follow below. Keyboard, enlarged text and very short screens may still require scrolling.

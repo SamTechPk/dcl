@@ -41,13 +41,11 @@ function session() {
 function phoneValue() {
   return $('customer-phone').value.trim().replace(/[\u0660-\u0669\u06f0-\u06f9]/g,c => String(c.charCodeAt(0) % 16)).replace(/[\s()-]/g,'').replace(/^(?:\+92|0092|92)(?=3)/,'0');
 }
-function teamValue() { return $('team-name-input').value.trim().replace(/\s+/g,' '); }
 function nameValue() { return $('customer-name').value.trim().replace(/\s+/g,' '); }
 function fieldErrors() {
   const now = pakistanNow(), day = $('date').value, name = nameValue(), rawName = $('customer-name').value;
   return {
     'customer-name': name.length < 2 || name.length > 80 || /[<>\x00-\x1f\x7f\u200e\u200f\u202a-\u202e\u2066-\u2069]/.test(rawName) || !/[\p{L}]/u.test(name) ? 'Enter your name (2–80 characters).' : '',
-    'team-name-input': teamValue() && (teamValue().length>80 || /[<>\x00-\x1f\x7f\u200e\u200f\u202a-\u202e\u2066-\u2069]/.test($('team-name-input').value) || !/[\p{L}]/u.test(teamValue())) ? 'Enter a team name, or leave this optional field blank.' : '',
     'customer-phone': /^03\d{9}$/.test(phoneValue()) ? '' : 'Use 11 digits starting with 03, or +92 3XXXXXXXXX.',
     'date': !validDate(day) || day < now.day || day > addDay(now.day,90) ? 'Choose today or a date within the next 90 days.' : '',
     'time-from': $('time-from').value === '' || !Number.isInteger(Number($('time-from').value)) || Number($('time-from').value)<0 || Number($('time-from').value)>23 ? 'Choose a start time.' : validDate(day) && startIsPast(day,Number($('time-from').value)) ? 'This start time has passed. Choose a later time.' : '',
@@ -62,14 +60,14 @@ function showValidation() {
     $(id).setAttribute('aria-invalid', visible ? 'true' : 'false');
     $(id).setCustomValidity(message);
   }
-  $('form-status').textContent = valid ? 'Next step: tap Send inquiry on WhatsApp below.' : 'Fill your details to unlock the WhatsApp button below.';
+  $('form-status').textContent = valid ? 'Ready — tap the WhatsApp button below.' : 'Fill the details, then send on WhatsApp.';
   $('form-status').setAttribute('data-ready',String(valid));
   $('action-instruction').textContent = valid ? 'Ready? Send your inquiry below.' : 'Fill your details to enable this button.';
   return valid;
 }
 function bookingMessage() {
   const s = session(); if (!s) return '';
-  return 'DCL CRICKET ARENA — NEW INQUIRY\n\nDate: ' + pretty(s.day,{weekday:'long',day:'numeric',month:'long',year:'numeric'}) + '\nTime Slot: ' + clock(s.from) + ' to ' + clock(s.to) + ' (' + s.hours + ' HRS)' + (s.to>=24 ? '\nEnd Date: ' + pretty(addDay(s.day,1),{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '') + '\nCustomer Name: ' + (nameValue() || '[Your name]') + '\nPhone Number: ' + (phoneValue() || '[Mobile number]') + (teamValue() ? '\nTeam Name: ' + teamValue() : '');
+  return 'DCL CRICKET ARENA — NEW INQUIRY\n\nDate: ' + pretty(s.day,{weekday:'long',day:'numeric',month:'long',year:'numeric'}) + '\nTime Slot: ' + clock(s.from) + ' to ' + clock(s.to) + ' (' + s.hours + ' HRS)' + (s.to>=24 ? '\nEnd Date: ' + pretty(addDay(s.day,1),{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '') + '\nCustomer Name: ' + (nameValue() || '[Your name]') + '\nPhone Number: ' + (phoneValue() || '[Mobile number]');
 }
 function renderEnd(preserve = false) {
   const previous = $('time-to').value, value = $('time-from').value;
@@ -145,7 +143,7 @@ for (const event of ['input','change']) {
   $('time-from').addEventListener(event,()=>{renderEnd(true); update(); $('error').textContent='';});
   $('time-to').addEventListener(event,()=>{update(); $('error').textContent='';});
 }
-for (const id of ['customer-name','customer-phone','team-name-input']) $(id).addEventListener('input',()=>{$(id).setCustomValidity('');$('send-status').textContent='';update();});
+for (const id of ['customer-name','customer-phone']) $(id).addEventListener('input',()=>{$(id).setCustomValidity('');$('send-status').textContent='';update();});
 $('customer-form').addEventListener('submit',sendInquiry);
 $('copy-message').addEventListener('click',copyInquiry);
 $('clear').addEventListener('click',()=>{if(!sending){touched.delete('time-from');touched.delete('time-to');renderTimes();$('error').textContent='';$('send-status').textContent='';}});
@@ -153,7 +151,7 @@ window.addEventListener('pageshow',()=>{unlock(); const current=pakistanNow(); d
 $('year').textContent=now.day.slice(0,4); $('sam-year').textContent=now.day.slice(0,4);
 renderTimes(); $('script-help').hidden=true;
 
-for (const id of ['customer-name','customer-phone','team-name-input','date','time-from','time-to']) {
+for (const id of ['customer-name','customer-phone','date','time-from','time-to']) {
   $(id).addEventListener('blur',()=>{touched.add(id);update();});
 }
 // A real winner and photo are published only after owner confirmation. No customer records are read here.

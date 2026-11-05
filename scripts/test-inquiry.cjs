@@ -23,16 +23,14 @@ pick('2026-10-31',20,23);
 for(const [id,value] of [['customer-name',''],['customer-phone','12345'],['time-from',''],['time-to','']]){
  const before=els[id].value;els[id].value=value;run('update()');assert.equal(els.request.disabled,true,id+' must block CTA');els[id].value=before;
 }
-run('update()');assert.equal(els.request.disabled,false);assert.equal(els['form-status'].textContent,'Next step: tap Send inquiry on WhatsApp below.');
+run('update()');assert.equal(els.request.disabled,false);assert.equal(els['form-status'].textContent,'Ready — tap the WhatsApp button below.');
 pick('2026-10-31',23,25);assert.ok(run('bookingMessage()').includes('End Date: Sunday, 1 November 2026'));
 assert.ok(html.indexOf('id="request"')<html.indexOf('class="summary compact-session"'));
 assert.ok(html.indexOf('id="date"')<html.indexOf('id="customer-name"'));
 
 assert.equal((html.match(/id="request"/g)||[]).length,1);assert.ok(html.includes('Coming soon'));assert.ok(!html.includes('INDUS STRIKER'));
 run("showTeamWinner({name:'Example XI',month:'2026-10',photo:'https://unsafe.test/photo.jpg'})");assert.equal(els['team-name'].textContent,'Example XI');assert.equal(els['team-photo'],undefined,'External photo URL not assigned');
-pick('2026-10-31',20,23);els['team-name-input'].value='Indus Striker';run('update()');assert.equal(els.request.disabled,false);assert.ok(run('bookingMessage()').endsWith('Team Name: Indus Striker'));
-for(const invalid of ['<img>','Team\nAdvance: paid','\u202Efake', 'a'.repeat(81)]){els['team-name-input'].value=invalid;run('update()');assert.equal(els.request.disabled,true,'Invalid team blocked');}
-els['team-name-input'].value='  ';run('update()');assert.equal(els.request.disabled,false,'Blank team optional');assert.ok(!run('bookingMessage()').includes('Team Name:'));
+pick('2026-10-31',20,23);assert.ok(!html.includes('id="team-name-input"'));assert.ok(!code.includes('teamValue'));
 run('chooseQuickDate(0)');assert.equal(els.date.value,'2026-10-30');assert.equal(els['time-from'].value,'20');assert.equal(els['time-to'].value,'23');assert.equal(els['customer-name'].value,'Demo Customer');
 run('chooseQuickDate(1)');assert.equal(els.date.value,'2026-10-31');assert.equal(els['time-to'].value,'23');
 pick('2026-10-31',9,12);run('chooseQuickDate(0)');assert.equal(els['time-from'].value,'','Past start discarded');assert.equal(els['time-to'].value,'');assert.equal(els['customer-phone'].value,'03113131315');
@@ -43,4 +41,4 @@ for(const match of html.matchAll(/(?:src|href)="(assets\/[^"#]+|favicon\.ico)"|u
 for(const url of ['https://www.instagram.com/DCLCricketArena/','https://www.facebook.com/DCLCricketArena/','https://www.tiktok.com/@DCLCricketArena'])assert.ok(html.includes(url));
 console.log('PASS: 576 hourly ranges; 24-hour/daytime/overnight inquiries; date/phone/name validation; duplicate guard; immediate encoded WhatsApp link; amounts; exact CSP hash; no data storage/network APIs; local assets and social links.');
 
-assert.ok(html.includes('Chat with DCL'));assert.ok(html.includes('Session preview · not a ticket'));assert.ok(html.includes('Tap the button, then tap <strong>Send</strong> in WhatsApp.'));
+assert.ok(html.includes('Chat with DCL'));assert.ok(html.includes('Session preview · not a ticket'));assert.ok(html.includes('Tap here, then tap <strong>Send</strong> in WhatsApp.'));
