@@ -59,3 +59,6 @@ Powered by SAM TECH
 
 ## One-view mobile form — 5 November 2026
 Team name removed from form, validation and inquiry message. Tighter spacing, 44px native inputs, 52px WhatsApp action. Mobile anchor opens at form with long introduction removed; session preview and help follow below. Keyboard, enlarged text and very short screens may still require scrolling.
+
+## Smart WhatsApp actions — 5 November 2026
+Gentle ready-button pulse while form is valid; no animation with reduced-motion preference. All five WhatsApp chat links use the prepared inquiry when complete; otherwise open a general question. Click revalidates expired times and blocks duplicate taps. No automatic message sending: visitors must tap Send in WhatsApp.

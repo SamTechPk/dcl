@@ -5,6 +5,8 @@ const $ = id => document.getElementById(id);
 const money = n => 'PKR ' + n.toLocaleString('en-PK');
 let sending = false, unlockTimer;
 const touched = new Set();
+const GENERAL_CHAT = 'https://wa.me/923337539909?text=' + encodeURIComponent('Hello DCL, I have a question.');
+const chatLinks = [...document.querySelectorAll('[data-dcl-chat]')];
 function pakistanNow() {
   const parts = new Intl.DateTimeFormat('en-CA', {timeZone:'Asia/Karachi',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
   const get = key => parts.find(p => p.type === key).value;
@@ -104,8 +106,22 @@ function update() {
   const complete = showValidation();
   $('request').disabled = !complete || sending;
   $('copy-message').disabled = !complete;
+  updateChatLinks(complete);
   $('message-preview').value = bookingMessage() || 'Select your date and times to preview your inquiry.';
 }
+function updateChatLinks(complete) {
+  const href = complete ? 'https://wa.me/923337539909?text='+encodeURIComponent(bookingMessage()) : GENERAL_CHAT;
+  for (const link of chatLinks) link.setAttribute('href',href);
+  $('chat-purpose').textContent = complete ? 'Send your inquiry' : 'General questions';
+  $('floating-chat').setAttribute('aria-label',complete ? 'Send your completed inquiry to DCL on WhatsApp' : 'Chat with DCL on WhatsApp for general questions');
+}
+function openDclChat(event) {
+  // Revalidate at the tap, including time expiry. Never send a partial inquiry.
+  if (!Object.values(fieldErrors()).some(Boolean)) { sendInquiry(event); return; }
+  if (sending) { event.preventDefault(); return; }
+  updateChatLinks(false);
+}
+for (const link of chatLinks) link.addEventListener('click',openDclChat);
 function readyToSend() {
   $('error').textContent = ''; $('send-status').textContent = '';
   const errors = fieldErrors();

@@ -3,7 +3,7 @@ const root=path.join(__dirname,'..'),html=fs.readFileSync(path.join(root,'dist/i
 const els={}; let deliveries=[],timers=[];
 function element(){return {value:'',textContent:'',disabled:false,children:[],events:{},hidden:false,validationMessage:'',setAttribute(){},removeAttribute(){},append(x){this.children.push(x)},replaceChildren(){this.children=[];this.value=''},get options(){return this.children},addEventListener(k,f){this.events[k]=f},setCustomValidity(s){this.validationMessage=s},focus(){},closest(){return {open:false}},select(){},setSelectionRange(){},reportValidity(){return !els['customer-name'].validationMessage&&!els['customer-phone'].validationMessage}};}
 const freeze='2026-10-30T12:00:00Z';
-const ctx={console,Date:class extends Date{constructor(...args){super(...(args.length?args:[freeze]))}static now(){return Date.parse(freeze)}},Intl,Number,String,Set,Math,encodeURIComponent,navigator:{clipboard:{writeText:async()=>{}}},setTimeout(f){timers.push(f);return timers.length},clearTimeout(){},document:{getElementById:id=>els[id]??=element(),createElement:element},window:{addEventListener(){},location:{assign:u=>deliveries.push(u)}}};
+const ctx={console,Date:class extends Date{constructor(...args){super(...(args.length?args:[freeze]))}static now(){return Date.parse(freeze)}},Intl,Number,String,Set,Math,encodeURIComponent,navigator:{clipboard:{writeText:async()=>{}}},setTimeout(f){timers.push(f);return timers.length},clearTimeout(){},document:{querySelectorAll:()=>[els.chat??=element()],getElementById:id=>els[id]??=element(),createElement:element},window:{addEventListener(){},location:{assign:u=>deliveries.push(u)}}};
 vm.createContext(ctx);vm.runInContext(code,ctx);const run=s=>vm.runInContext(s,ctx);
 function pick(day,from,to){els.date.value=day;run('renderTimes()');els['time-from'].value=String(from);run('renderEnd()');els['time-to'].value=String(to);run('update()');}
 els['customer-name'].value='Demo Customer';els['customer-phone'].value='+92 311 3131315';
@@ -42,3 +42,11 @@ for(const url of ['https://www.instagram.com/DCLCricketArena/','https://www.face
 console.log('PASS: 576 hourly ranges; 24-hour/daytime/overnight inquiries; date/phone/name validation; duplicate guard; immediate encoded WhatsApp link; amounts; exact CSP hash; no data storage/network APIs; local assets and social links.');
 
 assert.ok(html.includes('Chat with DCL'));assert.ok(html.includes('Session preview · not a ticket'));assert.ok(html.includes('Tap here, then tap <strong>Send</strong> in WhatsApp.'));
+
+// Every DCL chat entry uses the complete inquiry, with a safe general-chat fallback.
+pick('2026-10-31',23,25);els['customer-name'].value='Demo Customer';els['customer-phone'].value='+923113131315';run('update()');
+let beforeChats=deliveries.length;run('openDclChat({preventDefault(){}})');assert.equal(deliveries.length,beforeChats+1);assert.equal(decodeURIComponent(deliveries.at(-1).split('?text=')[1]),run('bookingMessage()'));assert.ok(run('bookingMessage()').includes('End Date:'));
+run('openDclChat({preventDefault(){}})');assert.equal(deliveries.length,beforeChats+1,'Chat duplicate blocked');run('unlock()');
+els['customer-phone'].value='123';run('update()');let prevented=false;ctx.chatEvent={preventDefault(){prevented=true}};run('openDclChat(chatEvent)');assert.equal(prevented,false,'Incomplete form allows normal general chat');assert.equal(deliveries.length,beforeChats+1,'No partial inquiry delivered');assert.equal(els['chat-purpose'].textContent,'General questions');
+assert.ok(html.includes('dcl-ready-pulse 2.4s'));assert.ok(html.includes('@media(prefers-reduced-motion:reduce)'));assert.equal((html.match(/data-dcl-chat /g)||[]).length,5);
+console.log('PASS: ready animation hooks, complete chat uses identical inquiry, duplicate guard, incomplete chat fallback, overnight end date.');
