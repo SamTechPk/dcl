@@ -62,8 +62,9 @@ function showValidation() {
     $(id).setAttribute('aria-invalid', visible ? 'true' : 'false');
     $(id).setCustomValidity(message);
   }
-  $('form-status').textContent = valid ? '✓ Details complete · number format valid' : 'Complete your name, mobile number, date and times to continue.';
+  $('form-status').textContent = valid ? 'Next step: tap Send inquiry on WhatsApp below.' : 'Fill your details to unlock the WhatsApp button below.';
   $('form-status').setAttribute('data-ready',String(valid));
+  $('action-instruction').textContent = valid ? 'Ready? Send your inquiry below.' : 'Fill your details to enable this button.';
   return valid;
 }
 function bookingMessage() {
@@ -169,3 +170,11 @@ function showTeamWinner(winner) {
   }
 }
 showTeamWinner(TEAM_OF_MONTH);
+
+// Keep general chat from covering the form or competing with the required inquiry action.
+if ('IntersectionObserver' in window) {
+  const chatObserver = new IntersectionObserver(entries => {
+    $('floating-chat').setAttribute('data-form-visible', String(entries[0].isIntersecting));
+  });
+  chatObserver.observe($('booking'));
+}

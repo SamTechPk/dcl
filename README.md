@@ -50,3 +50,9 @@ Keep index.html, favicon.ico, .nojekyll and assets together for hosting. The sep
 
 Powered by SAM TECH
 © 2026 SAM TECH. All Rights Reserved.
+
+## WhatsApp clarity update — 5 November 2026
+- Required send step placed immediately after the fields, above the session preview.
+- Explicit Send inquiry on WhatsApp label, clear next-step status and instructions to tap Send in WhatsApp.
+- Session preview marked as not a ticket; filling the form does not submit an inquiry.
+- Floating Chat with DCL icon for general questions, separate from the prepared inquiry.

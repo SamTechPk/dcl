@@ -23,9 +23,9 @@ pick('2026-10-31',20,23);
 for(const [id,value] of [['customer-name',''],['customer-phone','12345'],['time-from',''],['time-to','']]){
  const before=els[id].value;els[id].value=value;run('update()');assert.equal(els.request.disabled,true,id+' must block CTA');els[id].value=before;
 }
-run('update()');assert.equal(els.request.disabled,false);assert.equal(els['form-status'].textContent,'✓ Details complete · number format valid');
+run('update()');assert.equal(els.request.disabled,false);assert.equal(els['form-status'].textContent,'Next step: tap Send inquiry on WhatsApp below.');
 pick('2026-10-31',23,25);assert.ok(run('bookingMessage()').includes('End Date: Sunday, 1 November 2026'));
-assert.ok(html.indexOf('id="request"')>html.indexOf('class="summary compact-session"'));
+assert.ok(html.indexOf('id="request"')<html.indexOf('class="summary compact-session"'));
 assert.ok(html.indexOf('id="date"')<html.indexOf('id="customer-name"'));
 
 assert.equal((html.match(/id="request"/g)||[]).length,1);assert.ok(html.includes('Coming soon'));assert.ok(!html.includes('INDUS STRIKER'));
@@ -42,3 +42,5 @@ assert.ok(!html.includes('5 PM–5 AM'));assert.ok(html.includes('6 PM–6 AM'))
 for(const match of html.matchAll(/(?:src|href)="(assets\/[^"#]+|favicon\.ico)"|url\('([^']+)'\)/g)){const local=match[1]||match[2];if(!local.startsWith('data:'))assert.ok(fs.existsSync(path.join(root,'dist',local)),local);}
 for(const url of ['https://www.instagram.com/DCLCricketArena/','https://www.facebook.com/DCLCricketArena/','https://www.tiktok.com/@DCLCricketArena'])assert.ok(html.includes(url));
 console.log('PASS: 576 hourly ranges; 24-hour/daytime/overnight inquiries; date/phone/name validation; duplicate guard; immediate encoded WhatsApp link; amounts; exact CSP hash; no data storage/network APIs; local assets and social links.');
+
+assert.ok(html.includes('Chat with DCL'));assert.ok(html.includes('Session preview · not a ticket'));assert.ok(html.includes('Tap the button, then tap <strong>Send</strong> in WhatsApp.'));
