@@ -16,7 +16,7 @@
     show('Slot changed. Check again before contacting DCL.');
   }));
   button.addEventListener('click', async () => {
-    if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(date.value) || from.value === '' || to.value === '') {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date.value) || from.value === '' || to.value === '') {
       show('Please select a date, start time and end time first.'); return;
     }
     const start = Number(from.value), end = Number(to.value);
